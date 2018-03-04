@@ -94,7 +94,7 @@ staticGist : Html Msg
 staticGist =
     Html.div
         []
-        [ EmbeddedGist.unsafeEmbeddedGist "arowM/3af1c5d78c2aa9851838bc36b5134876"
+        [ EmbeddedGist.unsafeEmbeddedGist "arowM/456aaa1ce487170567317cdecec9c87f/Multiple2.elm"
         ]
 
 

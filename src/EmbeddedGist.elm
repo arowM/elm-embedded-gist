@@ -23,29 +23,24 @@ This module is harmful, so you should use it carefully.
 import Html exposing (Attribute, Html)
 import Html.Attributes as Attributes
 import Html.Keyed as Keyed
+import SHA
 
 
-{-| Render function to construct a node that generates a script tag for gist embedding in it.
+{-| Render function to construct a node that generates a script tag to generate embedded gist code block in it.
 
 e.g.,
 
     div
         [ class "wrapper" ]
-        [ unsafeEmbeddedGist "arowM/836d478bda8cac261e1e5cab200a5ab0"
+        [ unsafeEmbeddedGist "arowM/456aaa1ce487170567317cdecec9c87f"
         ]
 
-Above Elm view is rendered to bellow.
+You can specify a single file in a gist as follows.
 
-    <div class="wrapper">
-        <div style="padding: 0px;">
-            <script>
-            function handleGist(json) {
-                ...
-            }
-            </script>
-            <script src="https://gist.github.com/arowM/836d478bda8cac261e1e5cab200a5ab0.json?callback=handleGist"></script>
-        <div>
-    </div>
+    div
+        [ class "wrapper" ]
+        [ unsafeEmbeddedGist "arowM/456aaa1ce487170567317cdecec9c87f/Multiple2.elm"
+        ]
 
 -}
 unsafeEmbeddedGist : String -> Html msg
@@ -82,9 +77,19 @@ function """ ++ handlerName str ++ """(json) {
                     [ Attributes.src <|
                         String.concat
                             [ "https://gist.github.com/"
-                            , str
-                            , ".json?callback="
+                            , gistBaseUrl str
+                            , ".json"
+                            , "?callback="
                             , handlerName str
+                            , case String.split "/" str of
+                                user :: hash :: file :: _ ->
+                                    String.concat
+                                        [ "&file="
+                                        , file
+                                        ]
+
+                                _ ->
+                                    ""
                             ]
                     ]
                     []
@@ -99,12 +104,22 @@ function """ ++ handlerName str ++ """(json) {
 
 handlerName : String -> String
 handlerName str =
-    "handleGist" ++ String.filter (\c -> c /= '/') str
+    "handleGist" ++ SHA.sha1sum str
 
 
 wrapperId : String -> String
 wrapperId str =
-    "js-elm-embedded-gist-" ++ str
+    "js-elm-embedded-gist-" ++ SHA.sha1sum str
+
+
+gistBaseUrl : String -> String
+gistBaseUrl str =
+    case String.split "/" str of
+        user :: hash :: _ ->
+            String.join "/" [ user, hash ]
+
+        _ ->
+            str
 
 
 noPadding : Attribute msg
