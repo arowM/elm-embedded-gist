@@ -40,6 +40,7 @@ type alias Model =
 type TargetGist
     = GistDefault
     | GistMap
+    | GistSample
 
 
 gistIdentifier : TargetGist -> String
@@ -50,6 +51,9 @@ gistIdentifier target =
 
         GistMap ->
             "arowM/3dde727b1c53f9d49953e1c77abd5c84"
+
+        GistSample ->
+            "arowM/3af1c5d78c2aa9851838bc36b5134876"
 
 
 
@@ -65,7 +69,7 @@ update msg model =
     case msg of
         SelectTargetGist target ->
             ( { model
-                | targetGist= Just target
+                | targetGist = Just target
               }
             , Cmd.none
             )
@@ -100,17 +104,27 @@ gistSelector mtarget =
         []
         [ Html.button
             [ Attributes.disabled <|
-                mtarget == Just GistDefault
+                mtarget
+                    == Just GistDefault
             , Events.onClick <| SelectTargetGist GistDefault
             ]
             [ Html.text <| gistIdentifier GistDefault
             ]
         , Html.button
             [ Attributes.disabled <|
-                mtarget == Just GistMap
+                mtarget
+                    == Just GistMap
             , Events.onClick <| SelectTargetGist GistMap
             ]
             [ Html.text <| gistIdentifier GistMap
+            ]
+        , Html.button
+            [ Attributes.disabled <|
+                mtarget
+                    == Just GistSample
+            , Events.onClick <| SelectTargetGist GistSample
+            ]
+            [ Html.text <| gistIdentifier GistSample
             ]
         ]
 

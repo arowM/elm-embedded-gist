@@ -58,7 +58,7 @@ unsafeEmbeddedGist str =
                 [ noPadding
                 ]
                 [ Html.div
-                    [ Attributes.id <|
+                    [ Attributes.class <|
                         wrapperId str
                     ]
                     []
@@ -66,12 +66,15 @@ unsafeEmbeddedGist str =
                     []
                     [ Html.text <| """
 function """ ++ handlerName str ++ """(json) {
-  var target = document.getElementById(\"""" ++ wrapperId str ++ """");
+  var targets = document.getElementsByClassName(\"""" ++ wrapperId str ++ """");
   var stylesheet = document.createElement("link");
   stylesheet.rel = "stylesheet";
   stylesheet.href = json.stylesheet;
-  target.insertAdjacentHTML('beforeend', json.div);
-  target.appendChild(stylesheet);
+  Array.prototype.slice.call(targets || []).forEach(function(target) {
+    if (!!target.innerHTML) return;
+    target.insertAdjacentHTML('beforeend', json.div);
+    target.appendChild(stylesheet);
+  });
 }
               """
                     ]
@@ -101,7 +104,7 @@ handlerName str =
 
 wrapperId : String -> String
 wrapperId str =
-    "elm-embedded-gist-" ++ str
+    "js-elm-embedded-gist-" ++ str
 
 
 noPadding : Attribute msg
