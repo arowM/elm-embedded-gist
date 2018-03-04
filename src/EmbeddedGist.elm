@@ -37,7 +37,14 @@ e.g.,
 Above Elm view is rendered to bellow.
 
     <div class="wrapper">
-        <script src="https://gist.github.com/arowM/836d478bda8cac261e1e5cab200a5ab0.js"></script>
+        <div style="padding: 0px;">
+            <script>
+            function handleGist(json) {
+                ...
+            }
+            </script>
+            <script src="https://gist.github.com/arowM/836d478bda8cac261e1e5cab200a5ab0.json?callback=handleGist"></script>
+        <div>
     </div>
 
 -}
