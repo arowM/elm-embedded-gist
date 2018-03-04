@@ -79,9 +79,18 @@ view : Model -> Html Msg
 view model =
     Html.div
         []
-        [ lazy gistSelector model.targetGist
+        [ staticGist
+        , lazy gistSelector model.targetGist
         , Html.text "Here is an example embedded gist"
         , lazy embeddedGist model.targetGist
+        ]
+
+
+staticGist : Html Msg
+staticGist =
+    Html.div
+        []
+        [ EmbeddedGist.unsafeEmbeddedGist "arowM/3af1c5d78c2aa9851838bc36b5134876"
         ]
 
 

@@ -50,47 +50,58 @@ Above Elm view is rendered to bellow.
 -}
 unsafeEmbeddedGist : String -> Html msg
 unsafeEmbeddedGist str =
-    Html.div
+    Keyed.node "div"
         [ noPadding
         ]
-        [ Html.node "script"
-            []
-            [ Html.text """
-function handleGist(json) {
-    var scripts = document.getElementsByTagName("script");
-    var thisTag = scripts[scripts.length - 1];
-    var stylesheet = document.createElement("link");
-    stylesheet.rel = "stylesheet";
-    stylesheet.href = json.stylesheet;
-    Array.prototype.slice.call(thisTag.parentNode.children).forEach(function(child){
-      if (child.tagName === "SCRIPT") return;
-      thisTag.parentNode.removeChild(child);
-    });
-    thisTag.parentNode.insertAdjacentHTML('beforeend', json.div);
-    thisTag.parentNode.appendChild(stylesheet);
+        [ ( str
+          , Html.div
+                [ noPadding
+                ]
+                [ Html.div
+                    [ Attributes.id <|
+                        wrapperId str
+                    ]
+                    []
+                , Html.node "script"
+                    []
+                    [ Html.text <| """
+function """ ++ handlerName str ++ """(json) {
+  var target = document.getElementById(\"""" ++ wrapperId str ++ """");
+  var stylesheet = document.createElement("link");
+  stylesheet.rel = "stylesheet";
+  stylesheet.href = json.stylesheet;
+  target.insertAdjacentHTML('beforeend', json.div);
+  target.appendChild(stylesheet);
 }
-            """
-            ]
-        , Keyed.node "div"
-            [ noPadding
-            ]
-            [ ( str
-              , Html.node "script"
+              """
+                    ]
+                , Html.node "script"
                     [ Attributes.src <|
                         String.concat
                             [ "https://gist.github.com/"
                             , str
-                            , ".json?callback=handleGist"
+                            , ".json?callback="
+                            , handlerName str
                             ]
                     ]
                     []
-              )
-            ]
+                ]
+          )
         ]
 
 
 
 -- Helper functions
+
+
+handlerName : String -> String
+handlerName str =
+    "handleGist" ++ String.filter (\c -> c /= '/') str
+
+
+wrapperId : String -> String
+wrapperId str =
+    "elm-embedded-gist-" ++ str
 
 
 noPadding : Attribute msg
