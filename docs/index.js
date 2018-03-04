@@ -8274,9 +8274,26 @@ var _user$project$EmbeddedGist$noPadding = _elm_lang$html$Html_Attributes$style(
 		_0: {ctor: '_Tuple2', _0: 'padding', _1: '0'},
 		_1: {ctor: '[]'}
 	});
-var _user$project$EmbeddedGist$unsafeEmbeddedGist = function (str) {
+var _user$project$EmbeddedGist$wrapperId = function (str) {
+	return A2(_elm_lang$core$Basics_ops['++'], 'elm-embedded-gist-', str);
+};
+var _user$project$EmbeddedGist$handlerName = function (str) {
 	return A2(
-		_elm_lang$html$Html$div,
+		_elm_lang$core$Basics_ops['++'],
+		'handleGist',
+		A2(
+			_elm_lang$core$String$filter,
+			function (c) {
+				return !_elm_lang$core$Native_Utils.eq(
+					c,
+					_elm_lang$core$Native_Utils.chr('/'));
+			},
+			str));
+};
+var _user$project$EmbeddedGist$unsafeEmbeddedGist = function (str) {
+	return A3(
+		_elm_lang$html$Html_Keyed$node,
+		'div',
 		{
 			ctor: '::',
 			_0: _user$project$EmbeddedGist$noPadding,
@@ -8284,20 +8301,11 @@ var _user$project$EmbeddedGist$unsafeEmbeddedGist = function (str) {
 		},
 		{
 			ctor: '::',
-			_0: A3(
-				_elm_lang$html$Html$node,
-				'script',
-				{ctor: '[]'},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text('\nfunction handleGist(json) {\n    var scripts = document.getElementsByTagName(\"script\");\n    var thisTag = scripts[scripts.length - 1];\n    var stylesheet = document.createElement(\"link\");\n    stylesheet.rel = \"stylesheet\";\n    stylesheet.href = json.stylesheet;\n    Array.prototype.slice.call(thisTag.parentNode.children).forEach(function(child){\n      if (child.tagName === \"SCRIPT\") return;\n      thisTag.parentNode.removeChild(child);\n    });\n    thisTag.parentNode.insertAdjacentHTML(\'beforeend\', json.div);\n    thisTag.parentNode.appendChild(stylesheet);\n}\n            '),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A3(
-					_elm_lang$html$Html_Keyed$node,
-					'div',
+			_0: {
+				ctor: '_Tuple2',
+				_0: str,
+				_1: A2(
+					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
 						_0: _user$project$EmbeddedGist$noPadding,
@@ -8305,37 +8313,74 @@ var _user$project$EmbeddedGist$unsafeEmbeddedGist = function (str) {
 					},
 					{
 						ctor: '::',
-						_0: {
-							ctor: '_Tuple2',
-							_0: str,
-							_1: A3(
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$id(
+									_user$project$EmbeddedGist$wrapperId(str)),
+								_1: {ctor: '[]'}
+							},
+							{ctor: '[]'}),
+						_1: {
+							ctor: '::',
+							_0: A3(
 								_elm_lang$html$Html$node,
 								'script',
+								{ctor: '[]'},
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$src(
-										_elm_lang$core$String$concat(
-											{
-												ctor: '::',
-												_0: 'https://gist.github.com/',
-												_1: {
+									_0: _elm_lang$html$Html$text(
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'\nfunction ',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_user$project$EmbeddedGist$handlerName(str),
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													'(json) {\n  var target = document.getElementById(\"',
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														_user$project$EmbeddedGist$wrapperId(str),
+														'\");\n  var stylesheet = document.createElement(\"link\");\n  stylesheet.rel = \"stylesheet\";\n  stylesheet.href = json.stylesheet;\n  target.insertAdjacentHTML(\'beforeend\', json.div);\n  target.appendChild(stylesheet);\n}\n              '))))),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A3(
+									_elm_lang$html$Html$node,
+									'script',
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$src(
+											_elm_lang$core$String$concat(
+												{
 													ctor: '::',
-													_0: str,
+													_0: 'https://gist.github.com/',
 													_1: {
 														ctor: '::',
-														_0: '.json?callback=handleGist',
-														_1: {ctor: '[]'}
+														_0: str,
+														_1: {
+															ctor: '::',
+															_0: '.json?callback=',
+															_1: {
+																ctor: '::',
+																_0: _user$project$EmbeddedGist$handlerName(str),
+																_1: {ctor: '[]'}
+															}
+														}
 													}
-												}
-											})),
-									_1: {ctor: '[]'}
-								},
-								{ctor: '[]'})
-						},
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
-			}
+												})),
+										_1: {ctor: '[]'}
+									},
+									{ctor: '[]'}),
+								_1: {ctor: '[]'}
+							}
+						}
+					})
+			},
+			_1: {ctor: '[]'}
 		});
 };
 
@@ -8351,6 +8396,14 @@ var _user$project$Main$result = F3(
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
+var _user$project$Main$staticGist = A2(
+	_elm_lang$html$Html$div,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: _user$project$EmbeddedGist$unsafeEmbeddedGist('arowM/3af1c5d78c2aa9851838bc36b5134876'),
+		_1: {ctor: '[]'}
+	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p1 = msg;
@@ -8463,14 +8516,18 @@ var _user$project$Main$view = function (model) {
 		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Main$gistSelector, model.targetGist),
+			_0: _user$project$Main$staticGist,
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$html$Html$text('Here is an example embedded gist'),
+				_0: A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Main$gistSelector, model.targetGist),
 				_1: {
 					ctor: '::',
-					_0: A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Main$embeddedGist, model.targetGist),
-					_1: {ctor: '[]'}
+					_0: _elm_lang$html$Html$text('Here is an example embedded gist'),
+					_1: {
+						ctor: '::',
+						_0: A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Main$embeddedGist, model.targetGist),
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		});
