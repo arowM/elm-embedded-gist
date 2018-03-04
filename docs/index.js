@@ -8275,7 +8275,7 @@ var _user$project$EmbeddedGist$noPadding = _elm_lang$html$Html_Attributes$style(
 		_1: {ctor: '[]'}
 	});
 var _user$project$EmbeddedGist$wrapperId = function (str) {
-	return A2(_elm_lang$core$Basics_ops['++'], 'elm-embedded-gist-', str);
+	return A2(_elm_lang$core$Basics_ops['++'], 'js-elm-embedded-gist-', str);
 };
 var _user$project$EmbeddedGist$handlerName = function (str) {
 	return A2(
@@ -8317,7 +8317,7 @@ var _user$project$EmbeddedGist$unsafeEmbeddedGist = function (str) {
 							_elm_lang$html$Html$div,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$id(
+								_0: _elm_lang$html$Html_Attributes$class(
 									_user$project$EmbeddedGist$wrapperId(str)),
 								_1: {ctor: '[]'}
 							},
@@ -8339,11 +8339,11 @@ var _user$project$EmbeddedGist$unsafeEmbeddedGist = function (str) {
 												_user$project$EmbeddedGist$handlerName(str),
 												A2(
 													_elm_lang$core$Basics_ops['++'],
-													'(json) {\n  var target = document.getElementById(\"',
+													'(json) {\n  var targets = document.getElementsByClassName(\"',
 													A2(
 														_elm_lang$core$Basics_ops['++'],
 														_user$project$EmbeddedGist$wrapperId(str),
-														'\");\n  var stylesheet = document.createElement(\"link\");\n  stylesheet.rel = \"stylesheet\";\n  stylesheet.href = json.stylesheet;\n  target.insertAdjacentHTML(\'beforeend\', json.div);\n  target.appendChild(stylesheet);\n}\n              '))))),
+														'\");\n  var stylesheet = document.createElement(\"link\");\n  stylesheet.rel = \"stylesheet\";\n  stylesheet.href = json.stylesheet;\n  Array.prototype.slice.call(targets || []).forEach(function(target) {\n    if (!!target.innerHTML) return;\n    target.insertAdjacentHTML(\'beforeend\', json.div);\n    target.appendChild(stylesheet);\n  });\n}\n              '))))),
 									_1: {ctor: '[]'}
 								}),
 							_1: {
@@ -8419,10 +8419,13 @@ var _user$project$Main$update = F2(
 	});
 var _user$project$Main$gistIdentifier = function (target) {
 	var _p2 = target;
-	if (_p2.ctor === 'GistDefault') {
-		return 'arowM/836d478bda8cac261e1e5cab200a5ab0';
-	} else {
-		return 'arowM/3dde727b1c53f9d49953e1c77abd5c84';
+	switch (_p2.ctor) {
+		case 'GistDefault':
+			return 'arowM/836d478bda8cac261e1e5cab200a5ab0';
+		case 'GistMap':
+			return 'arowM/3dde727b1c53f9d49953e1c77abd5c84';
+		default:
+			return 'arowM/3af1c5d78c2aa9851838bc36b5134876';
 	}
 };
 var _user$project$Main$embeddedGist = function (memb) {
@@ -8451,6 +8454,7 @@ var _user$project$Main$init = {
 var _user$project$Main$Model = function (a) {
 	return {targetGist: a};
 };
+var _user$project$Main$GistSample = {ctor: 'GistSample'};
 var _user$project$Main$GistMap = {ctor: 'GistMap'};
 var _user$project$Main$GistDefault = {ctor: 'GistDefault'};
 var _user$project$Main$SelectTargetGist = function (a) {
@@ -8506,7 +8510,31 @@ var _user$project$Main$gistSelector = function (mtarget) {
 							_user$project$Main$gistIdentifier(_user$project$Main$GistMap)),
 						_1: {ctor: '[]'}
 					}),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$disabled(
+								_elm_lang$core$Native_Utils.eq(
+									mtarget,
+									_elm_lang$core$Maybe$Just(_user$project$Main$GistSample))),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(
+									_user$project$Main$SelectTargetGist(_user$project$Main$GistSample)),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								_user$project$Main$gistIdentifier(_user$project$Main$GistSample)),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
